@@ -4,24 +4,28 @@ import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
 public class HibernateUtil {
-    private static final SessionFactory sessionFactory;
 
-    static {
-        try {
+    private static SessionFactory sessionFactory;
+
+    public static SessionFactory getSessionFactory() {
+
+        if (sessionFactory == null) {
             sessionFactory = new Configuration()
                     .configure()
                     .buildSessionFactory();
-        } catch (Throwable ex) {
-            System.err.println("Ошибка создания SessionFactory: " + ex);
-            throw new ExceptionInInitializerError(ex);
         }
-    }
 
-    public static SessionFactory getSessionFactory() {
         return sessionFactory;
     }
 
+    public static void setSessionFactory(SessionFactory factory) {
+        sessionFactory = factory;
+    }
+
     public static void shutdown() {
-        sessionFactory.close();
+        if (sessionFactory != null) {
+            sessionFactory.close();
+            sessionFactory = null;
+        }
     }
 }
