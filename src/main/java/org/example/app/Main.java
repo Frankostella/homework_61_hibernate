@@ -4,13 +4,15 @@ import java.util.List;
 import java.util.Scanner;
 import org.example.dao.UserDao;
 import org.example.entity.User;
+import org.example.service.UserService;
+
 import java.time.LocalDateTime;
 
 public class Main {
     public static void main(String[] args) {
 
         Scanner sc = new Scanner(System.in);
-        UserDao dao = new UserDao();
+        UserService service = new UserService(new UserDao());
 
         boolean isRunning = true;
 
@@ -32,7 +34,7 @@ public class Main {
                     int age = sc.nextInt();
 
                     User user = new User(name, email, age, LocalDateTime.now());
-                    dao.save(user);
+                    service.save(user);
                     System.out.println("Пользователь успешно сохранен");
 
                     break;
@@ -40,7 +42,7 @@ public class Main {
                 case 2:
                     System.out.println("Введите ID пользователя: ");
                     Long id = sc.nextLong();
-                    User foundUser = dao.findById(id);
+                    User foundUser = service.findById(id);
 
                     if (foundUser != null) {
                         System.out.println(foundUser);
@@ -53,7 +55,7 @@ public class Main {
                 case 3:
                     System.out.println("Введите ID пользователя: ");
                     Long idToUpdate = sc.nextLong();
-                    User userToUpdate = dao.findById(idToUpdate);
+                    User userToUpdate = service.findById(idToUpdate);
 
                     if (userToUpdate == null) {
                         System.out.println("Пользователь не найден.");
@@ -74,7 +76,7 @@ public class Main {
                     userToUpdate.setEmail(newEmail);
                     userToUpdate.setAge(newAge);
 
-                    dao.update(userToUpdate);
+                    service.update(userToUpdate);
                     System.out.println("Пользователь успешно обновлен.");
 
                     break;
@@ -82,20 +84,20 @@ public class Main {
                 case 4:
                     System.out.print("Введите ID пользователя: ");
                     Long idToDelete = sc.nextLong();
-                    User userToDelete = dao.findById(idToDelete);
+                    User userToDelete = service.findById(idToDelete);
 
                     if (userToDelete == null) {
                         System.out.println("Пользователь не найден.");
                         break;
                     }
 
-                    dao.delete(idToDelete);
+                    service.delete(idToDelete);
                     System.out.println("Пользователь успешно удален.");
 
                     break;
 
                 case 5:
-                    List<User> users = dao.findAll();
+                    List<User> users = service.findAll();
 
                     if (users.isEmpty()) {
                         System.out.println("Список пользователей пуст.");
